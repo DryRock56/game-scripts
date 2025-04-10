@@ -1,0 +1,22 @@
+[project]
+name = "game-scripts"
+version = "0.1.0"
+description = "Scripts for automating simple things in games"
+authors = [
+    {name = "DryRock"}
+]
+license = { text = "GPL-3.0-only" }
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy (>=2.2.4,<3.0.0)",
+    "opencv-python (>=4.11.0.86,<5.0.0.0)",
+    "pillow (>=11.1.0,<12.0.0)",
+    "pyautogui (>=0.9.54,<0.10.0)",
+    "pydirectinput (>=1.0.4,<2.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
