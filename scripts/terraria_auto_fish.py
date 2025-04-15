@@ -24,6 +24,15 @@ def capture_region(region):
     frame = cv2.cvtColor(np.array(screenshot), cv2.COLOR_RGB2GRAY)
     return frame
 
+def do_click(x, y):
+    di.moveTo(x, y)
+
+    di.mouseDown(x=x, y=y, button='left')
+    di.mouseUp(x=x, y=y, button='left')
+    time.sleep(0.25)
+    di.mouseDown(x=x, y=y, button='left')
+    di.mouseUp(x=x, y=y, button='left')
+
 def terraria_auto_fish():
     # Get the locations of the bobber and the player.
     input("Place the mouse over the BOBBER and press Enter...")
@@ -52,10 +61,7 @@ def terraria_auto_fish():
     capture_box = (left, top, CAPTURE_WIDTH, CAPTURE_HEIGHT)
 
     # Click into game and do initial cast.
-    di.moveTo(cast_x, cast_y)
-    di.click(cast_x, cast_y)
-    time.sleep(0.1)
-    di.press(PRESS_KEY)
+    do_click(cast_x, cast_y)
 
     # Begin watch
     time.sleep(1.0)
@@ -77,10 +83,7 @@ def terraria_auto_fish():
 
         if motion_level > MOTION_THRESHOLD and not motion_detected:
             print("Got a bite!")
-            di.moveTo(cast_x, cast_y)
-            di.press(PRESS_KEY)
-            time.sleep(0.25)
-            di.press(PRESS_KEY)
+            do_click(cast_x, cast_y)
 
             trigger_time = time.time()
             motion_detected = True
