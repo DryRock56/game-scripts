@@ -8,7 +8,7 @@ import time
 # First, place the pointer where the bobber will sit and press enter. Then, at the player.
 # The script will then monitor the position of the bobber to determine when a fish is hooked.
 
-MOTION_THRESHOLD = 100000
+MOTION_THRESHOLD = 80000
 
 CAPTURE_WIDTH  = 100
 CAPTURE_HEIGHT = 100
@@ -16,8 +16,6 @@ CAPTURE_HEIGHT = 100
 HORIZONTAL_DRIFT_SCALE = 0.1
 
 CAST_DISTANCE = 500
-
-PRESS_KEY = 'p'
 
 def capture_region(region):
     screenshot = gui.screenshot(region=region)
@@ -27,6 +25,8 @@ def capture_region(region):
 def do_click(x, y):
     di.moveTo(x, y)
 
+    # For some reason, the "click" and "leftClick" calls don't always work.
+    # However, doing the following is consistent.
     di.mouseDown(x=x, y=y, button='left')
     di.mouseUp(x=x, y=y, button='left')
     time.sleep(0.25)
@@ -43,7 +43,7 @@ def terraria_auto_fish():
     player_pos = gui.position()
     print(f"Player position recorded at: {player_pos}")
 
-    # Calculate the vector from the player to the bobber and cast a point along the line for our clicking position
+    # Calculate the vector from the player to the bobber and cast a point along the line for our clicking position.
     x_vec = bobber_pos.x - player_pos.x
     y_vec = bobber_pos.y - player_pos.y
 
@@ -63,7 +63,7 @@ def terraria_auto_fish():
     # Click into game and do initial cast.
     do_click(cast_x, cast_y)
 
-    # Begin watch
+    # Begin watch.
     time.sleep(1.0)
     prev_frame = capture_region(capture_box)
     time.sleep(0.1)
@@ -79,7 +79,7 @@ def terraria_auto_fish():
         _, thresh = cv2.threshold(diff, 25, 255, cv2.THRESH_BINARY)
 
         motion_level = np.sum(thresh)
-        cv2.imshow("Motion Detection", thresh)
+        cv2.imshow("Motion Detection", thresh) # Visualize the detection area.
 
         if motion_level > MOTION_THRESHOLD and not motion_detected:
             print("Got a bite!")
@@ -88,15 +88,15 @@ def terraria_auto_fish():
             trigger_time = time.time()
             motion_detected = True
 
-        elif motion_detected and time.time() - trigger_time > 0.5:
+        elif motion_detected and time.time() - trigger_time > 0.5: # Allow some time before triggering again.
             motion_detected = False
             print("Looking for movement...")
 
         prev_frame = curr_frame
 
-        # Exit when ESC key is pressed
+        # Exit when ESC key is pressed.
         key = cv2.waitKey(1)
-        if key == 27:  # ESC key
+        if key == 27:  # ESC key.
             print("Exiting.")
             break
 
