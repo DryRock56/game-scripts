@@ -49,11 +49,15 @@ def terraria_auto_fish():
     y_vec = bobber_pos.y - player_pos.y
 
     magnitude  = (x_vec**2 + y_vec**2) ** 0.5
-    unit_vec_x = x_vec / magnitude
-    unit_vec_y = y_vec / magnitude
+    if magnitude > 0.0:
+        unit_vec_x = x_vec / magnitude
+        unit_vec_y = y_vec / magnitude
 
-    cast_x = int(player_pos.x + unit_vec_x * CAST_DISTANCE)
-    cast_y = int(player_pos.y + unit_vec_y * CAST_DISTANCE)
+        cast_x = int(player_pos.x + unit_vec_x * CAST_DISTANCE)
+        cast_y = int(player_pos.y + unit_vec_y * CAST_DISTANCE)
+    else:
+        cast_x = bobber_pos.x
+        cast_y = bobber_pos.y
 
     # Calculate the capture box coordinates (left, top). Account for some small x-drift of the bobber on cast.
     left = int(bobber_pos.x + x_vec * HORIZONTAL_DRIFT_SCALE - CAPTURE_WIDTH // 2)
@@ -79,9 +83,10 @@ def terraria_auto_fish():
         diff = cv2.absdiff(prev_frame, curr_frame)
         _, thresh = cv2.threshold(diff, 25, 255, cv2.THRESH_BINARY)
 
-        motion_level = np.sum(thresh)
         cv2.imshow("Motion Detection", thresh) # Visualize the detection area.
+        cv2.pollKey() # Required to fetch and handle OpenCV "HighGUI" events.
 
+        motion_level = np.sum(thresh)
         if motion_level > MOTION_THRESHOLD and not motion_detected:
             print("Got a bite!")
             do_click(cast_x, cast_y)
@@ -104,4 +109,5 @@ def terraria_auto_fish():
 
     cv2.destroyAllWindows()
 
-terraria_auto_fish()
+if __name__ == '__main__':
+    terraria_auto_fish()
