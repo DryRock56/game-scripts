@@ -1,4 +1,5 @@
 import cv2
+import keyboard
 import numpy as np
 import pyautogui as gui
 import pydirectinput as di
@@ -95,8 +96,7 @@ def terraria_auto_fish():
         prev_frame = curr_frame
 
         # Exit when ESC key is pressed.
-        key = cv2.waitKey(1)
-        if key == 27:  # ESC key.
+        if keyboard.is_pressed('esc'):
             print("Exiting.")
             break
 
